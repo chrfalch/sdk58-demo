@@ -9,6 +9,7 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | Tab  | Demo              | SDK 58 feature                                  | Label  |
 | ---- | ----------------- | ----------------------------------------------- | ------ |
 | Mail | Mail              | Expo UI `NavigationSplitView` on iOS            | New    |
+| Mail | App Intents       | `expo-app-intents`: Siri and Shortcuts create a draft | Alpha |
 | Duo  | Hinge             | Built for iOS 27: `expo-hinge`, `ArrangementView` | New  |
 | More | Variable fonts    | `expo-font` variable fonts                      | New    |
 | More | SVG variables     | `expo-image` `svgVariables`                     | New    |
@@ -18,6 +19,15 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 ### Mail
 
 A three-column mail client built with Expo UI's `NavigationSplitView`: mailboxes, messages, and the open message. On the unfolded Duo (or an iPad), the columns are side by side. On the folded Duo (or an iPhone), they become a stack. Fold or unfold the Duo, and the open message stays open. Swipe a message to archive, flag, or delete it, and tap Reply to start a draft.
+
+### App Intents
+
+Siri, Spotlight, Shortcuts, or Apple Intelligence can start a draft, and it opens in Drafts in the Mail tab. The intents are Swift files in `app-intents/`, which `npx expo-app-intents init --examples mail` created:
+
+- `CreateDraftIntent` adopts Apple's `.mail.createDraft` schema, so Apple Intelligence and Siri find it without a phrase.
+- `NewDraftIntent` is a plain intent with the phrase "New draft in SDK 58". Siri asks for the subject. It also shows in Spotlight: search for "SDK 58" and tap "New Draft".
+
+Both intents send a `createMailDraft` invocation to JavaScript. `src/demos/mail/use-draft-intents.ts` handles it with `useAppIntents()`, including invocations that arrive while the app is closed.
 
 ### Hinge
 

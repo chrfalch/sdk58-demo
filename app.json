@@ -3,7 +3,9 @@
     "name": "SDK 58",
     "slug": "sdk58-demo",
     "version": "1.0.0",
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "sdk58demo",
@@ -31,11 +33,17 @@
           }
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-app-intents"
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "inlineModules": {
+        "watchedDirectories": [
+          "app-intents"
+        ]
+      }
     }
   }
 }

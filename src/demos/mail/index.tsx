@@ -1,7 +1,7 @@
 // copied from nathan schroeder's expo-ui-examples (mit), src/examples/split-view/index.tsx at
 // bf89951. our edits: the info menu replaces the "examples" back button, mailboxes with a
-// count can be selected, the drafts are from rami, and a reply keeps one "Re:" and shows
-// its recipient.
+// count can be selected, the drafts are from rami, a reply keeps one "Re:" and shows its
+// recipient, and app intents can start a draft (use-draft-intents.ts).
 import { Host } from '@expo/ui';
 import {
   Button,
@@ -40,6 +40,7 @@ import {
   tag,
   tint,
 } from '@expo/ui/swift-ui/modifiers';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { openChangelog } from '@/demos/demo-toolbar';
@@ -55,6 +56,7 @@ import {
   type Message,
   messagesIn,
 } from './mail-data';
+import { useDraftIntents } from './use-draft-intents';
 
 const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
 const UNREAD_BLUE = '#007AFF';
@@ -111,8 +113,17 @@ export default function SplitViewScreen() {
 
   // Compose and Reply both start a draft and open it, so the new message is easy to
   // find: it is the open message in Drafts.
-  const startDraft = ({ subject, to }: { subject: string; to?: string }) => {
-    const id = `draft-${Date.now()}`;
+  const startDraft = ({
+    id = `draft-${Date.now()}`,
+    subject,
+    to,
+    body,
+  }: {
+    id?: string;
+    subject: string;
+    to?: string;
+    body?: string;
+  }) => {
     setMessages((all) => [
       {
         id,
@@ -121,7 +132,7 @@ export default function SplitViewScreen() {
         to,
         color: UNREAD_BLUE,
         subject,
-        body: ['Draft, not sent yet.'],
+        body: body ? body.split('\n').filter(Boolean) : ['Draft, not sent yet.'],
         time: 'Now',
         date: 'Today, now',
         unread: false,
@@ -134,6 +145,14 @@ export default function SplitViewScreen() {
     setMessageId(id);
     setCompactColumn('detail');
   };
+
+  // App Intents: a draft from Siri, Shortcuts, or Apple Intelligence opens in Drafts, as if
+  // you had tapped New Message. The intent opens the app, and this brings the Mail tab forward.
+  const router = useRouter();
+  useDraftIntents((draft) => {
+    startDraft(draft);
+    router.navigate('/');
+  });
 
   return (
     <>

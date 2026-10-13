@@ -65,6 +65,15 @@ export const DEMOS: Demo[] = [
     href: '/',
   },
   {
+    slug: 'app-intents',
+    title: 'App Intents',
+    description: 'Siri or Shortcuts creates a draft, and it opens in Mail',
+    systemImage: 'apple.intelligence',
+    status: 'Alpha',
+    changelog: Changelog.appIntents,
+    href: '/',
+  },
+  {
     slug: 'hinge',
     title: 'Hinge',
     description: 'The live hinge angle, and panels that split as you open the Duo',
