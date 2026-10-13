@@ -1,16 +1,17 @@
-import { Host } from '@expo/ui';
-import { ContentUnavailableView } from '@expo/ui/swift-ui';
+import { useHinge } from 'expo-hinge';
 
 import { DemoToolbar } from '@/demos/demo-toolbar';
+import HingeScreen from '@/demos/hinge';
+import { NeedsDuo } from '@/demos/hinge/needs-duo';
 import { demo } from '@/demos/registry';
 
 export default function DuoScreen() {
+  // the hinge is null on a device without one, and before ios 27.1.
+  const hinge = useHinge();
   return (
     <>
       <DemoToolbar demo={demo('hinge')} />
-      <Host style={{ flex: 1 }}>
-        <ContentUnavailableView title="Hinge" systemImage="rectangle.split.2x1" />
-      </Host>
+      {hinge ? <HingeScreen /> : <NeedsDuo />}
     </>
   );
 }

@@ -9,11 +9,16 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | Tab  | Demo              | SDK 58 feature                                  | Label  |
 | ---- | ----------------- | ----------------------------------------------- | ------ |
 | Mail | Mail              | Expo UI `NavigationSplitView` on iOS            | New    |
+| Duo  | Hinge             | Built for iOS 27: `expo-hinge`, `ArrangementView` | New  |
 | All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
 
 ### Mail
 
 A three-column mail client built with Expo UI's `NavigationSplitView`: mailboxes, messages, and the open message. On the unfolded Duo (or an iPad), the columns are side by side. On the folded Duo (or an iPhone), they become a stack. Fold or unfold the Duo, and the open message stays open. Swipe a message to archive, flag, or delete it, and tap Reply to start a draft.
+
+### Hinge
+
+The live hinge angle and status from `expo-hinge`, and the lowest and highest angle of the session. Open the Duo, and Expo UI's `ArrangementView` splits the screen into two panels. The picker switches the arrangement between adaptive, side by side, and stacked. On a device without a hinge, the tab says that it needs an iPhone Duo.
 
 ## Run it
 
