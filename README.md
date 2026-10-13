@@ -11,6 +11,7 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | Mail | Mail              | Expo UI `NavigationSplitView` on iOS            | New    |
 | Duo  | Hinge             | Built for iOS 27: `expo-hinge`, `ArrangementView` | New  |
 | More | Variable fonts    | `expo-font` variable fonts                      | New    |
+| More | SVG variables     | `expo-image` `svgVariables`                     | New    |
 | All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
 
 ### Mail
@@ -28,6 +29,10 @@ One Roboto Flex file, loaded with `useFonts`, gives nine weights and their itali
 On iOS, `fontWeight: '100'` and `'200'` do not pick the Thin and ExtraLight instances of this font: React Native maps 100 to Apple's UltraLight and 200 to Apple's Thin, so 200 renders as the Thin instance. `fontVariationSettings` sets the axis value itself, so every weight is correct.
 
 Roboto Flex is © The Roboto Flex Project Authors, under the SIL Open Font License 1.1 (`src/demos/variable-fonts/OFL.txt`).
+
+### SVG variables
+
+One SVG file of a house, drawn by `expo-image`. The SVG reads its colors from CSS variables (`var(--roof, #888888)`), and the `svgVariables` prop fills them in, so the picker recolors the roof and the image stays a vector.
 
 ## Run it
 
