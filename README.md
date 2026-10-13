@@ -8,7 +8,12 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 
 | Tab  | Demo              | SDK 58 feature                                  | Label  |
 | ---- | ----------------- | ----------------------------------------------- | ------ |
+| Mail | Mail              | Expo UI `NavigationSplitView` on iOS            | New    |
 | All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
+
+### Mail
+
+A three-column mail client built with Expo UI's `NavigationSplitView`: mailboxes, messages, and the open message. On the unfolded Duo (or an iPad), the columns are side by side. On the folded Duo (or an iPhone), they become a stack. Fold or unfold the Duo, and the open message stays open. Swipe a message to archive, flag, or delete it, and tap Reply to start a draft.
 
 ## Run it
 
