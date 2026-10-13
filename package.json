@@ -42,7 +42,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "check": "bun run typecheck && bun run lint",
-    "export": "expo export --platform ios"
+    "export": "expo export --platform ios",
+    "duo": "sh scripts/duo-hinge.sh"
   },
   "private": true
 }

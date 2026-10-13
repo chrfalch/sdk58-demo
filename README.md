@@ -41,6 +41,25 @@ DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer bunx expo run:ios 
 
 Install the runtime with `xcodebuild -downloadPlatform iOS -buildVersion 27.1`. Without `-buildVersion`, Xcode 27.1 downloads the iOS 27.0 runtime.
 
+To fold and unfold the Duo simulator from the terminal:
+
+```bash
+bun run duo fold     # 0°: the cover screen
+bun run duo half     # 90°
+bun run duo unfold   # 180°: the inner screen
+bun run duo 135      # any angle from 0 to 180
+```
+
+Xcode 27.1's Device Hub app has the same control.
+
+### Watch the simulator in the browser
+
+The app includes [Expo Device Hub](https://github.com/expo/expo-device-hub), an Expo DevTools plugin. When `bun start` runs, it prints a link to a dashboard that streams the simulator, and you can tap and type in it:
+
+```
+› Expo Device Hub: http://localhost:8081/_expo/plugins/expo-device-hub
+```
+
 ## How the code is organized
 
 - `src/app/`: the routes. `index.tsx` is the Mail tab, `duo/` is the Duo tab, and `more/` is the More tab.
