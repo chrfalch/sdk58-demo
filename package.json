@@ -6,7 +6,7 @@
   "dependencies": {
     "@expo/material-symbols": "^0.1.1",
     "@expo/ui": "~58.0.16",
-    "expo": "~58.0.8",
+    "expo": "~58.0.9",
     "expo-app-intents": "~0.5.5",
     "expo-build-properties": "~58.0.10",
     "expo-constants": "~58.0.11",
