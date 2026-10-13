@@ -24,6 +24,7 @@ import {
 } from '@expo/ui/jetpack-compose';
 import {
   background,
+  border,
   clickable,
   clip,
   fillMaxHeight,
@@ -41,6 +42,7 @@ import { BackHandler, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { openChangelog } from '@/demos/demo-toolbar';
+import { useInboxWidget } from '@/demos/inbox-widget/use-inbox-widget';
 import { demo } from '@/demos/registry';
 
 import { MESSAGES, messagesIn, type Message } from './mail-data';
@@ -57,6 +59,11 @@ export default function InboxScreen() {
   const inbox = messagesIn('inbox', messages);
   const unread = inbox.filter((m) => m.unread).length;
   const open = messages.find((m) => m.id === openId);
+
+  // the home screen widget shows the unread inbox, and its "mark all read" marks it read here.
+  useInboxWidget(messages, () =>
+    setMessages((all) => all.map((m) => (m.mailbox === 'inbox' ? { ...m, unread: false } : m)))
+  );
 
   const openMessage = (id: string) => {
     setOpenId(id);
@@ -217,11 +224,18 @@ function MessageRow({
 }
 
 function Avatar({ message, big = false }: { message: Message; big?: boolean }) {
+  const colors = useMaterialColors();
   const side = big ? 48 : 40;
   return (
     <Box
       contentAlignment="center"
-      modifiers={[size(side, side), clip(Shapes.Circle), background(message.color)]}>
+      // the outline keeps black and dark gray avatars visible in dark mode.
+      modifiers={[
+        size(side, side),
+        clip(Shapes.Circle),
+        background(message.color),
+        border(1, colors.outlineVariant),
+      ]}>
       <Text color="#FFFFFF" style={{ typography: big ? 'titleLarge' : 'titleMedium' }}>
         {message.sender.charAt(0)}
       </Text>

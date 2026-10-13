@@ -1,7 +1,8 @@
 // copied from nathan schroeder's expo-ui-examples (mit), src/examples/split-view/index.tsx at
 // bf89951. our edits: the info menu replaces the "examples" back button, mailboxes with a
 // count can be selected, the drafts are from rami, a reply keeps one "Re:" and shows its
-// recipient, and app intents can start a draft (use-draft-intents.ts).
+// recipient, app intents can start a draft (use-draft-intents.ts), and the inbox feeds the home
+// screen widget (src/demos/inbox-widget).
 import { Host } from '@expo/ui';
 import {
   Button,
@@ -44,6 +45,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { openChangelog } from '@/demos/demo-toolbar';
+import { useInboxWidget } from '@/demos/inbox-widget/use-inbox-widget';
 import { demo } from '@/demos/registry';
 
 import {
@@ -145,6 +147,11 @@ export default function SplitViewScreen() {
     setMessageId(id);
     setCompactColumn('detail');
   };
+
+  // The home screen widget shows the unread inbox, and its "mark all read" marks it read here.
+  useInboxWidget(messages, () =>
+    setMessages((all) => all.map((m) => (m.mailbox === 'inbox' ? { ...m, unread: false } : m)))
+  );
 
   // App Intents: a draft from Siri, Shortcuts, or Apple Intelligence opens in Drafts, as if
   // you had tapped New Message. The intent opens the app, and this brings the Mail tab forward.

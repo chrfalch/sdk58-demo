@@ -5,6 +5,7 @@ import DevicesFoldIcon from '@expo/material-symbols/devices_fold.xml';
 import FlagIcon from '@expo/material-symbols/flag.xml';
 import MailIcon from '@expo/material-symbols/mail.xml';
 import TextFieldsIcon from '@expo/material-symbols/text_fields.xml';
+import WidgetsIcon from '@expo/material-symbols/widgets.xml';
 import type { Href } from 'expo-router';
 import type { ComponentType } from 'react';
 import { Platform, type ImageSourcePropType } from 'react-native';
@@ -91,6 +92,17 @@ export const DEMOS: Demo[] = [
     changelog: Changelog.appIntents,
     href: '/',
     platforms: ['ios'],
+  },
+  {
+    slug: 'inbox-widget',
+    title: 'Home screen widget',
+    description: 'Unread mail on the home screen. Mark it all read from the widget.',
+    systemImage: 'square.grid.2x2',
+    materialIcon: WidgetsIcon,
+    status: 'New',
+    changelog: Changelog.androidWidgets,
+    // ios widgets are not new in sdk 58, so only android lists this one.
+    platforms: ['android'],
   },
   {
     slug: 'hinge',

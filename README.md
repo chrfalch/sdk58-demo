@@ -10,6 +10,7 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | -------- | ----------------- | ----------------------------------------------------- | ------ | ------------ |
 | Mail     | Mail              | Expo UI `NavigationSplitView` on iOS                  | New    | iOS, Android |
 | Mail     | App Intents       | `expo-app-intents`: Siri and Shortcuts create a draft | Alpha  | iOS          |
+| Home     | Inbox widget      | `expo-widgets` home screen widgets on Android         | New    | Android, iOS |
 | Duo/Fold | Hinge             | `expo-hinge`, and `ArrangementView` on iOS            | New    | iOS, Android |
 | More     | Variable fonts    | `expo-font` variable fonts                            | New    | iOS, Android |
 | More     | SVG variables     | `expo-image` `svgVariables`                           | New    | iOS, Android |
@@ -32,6 +33,18 @@ Siri, Spotlight, Shortcuts, or Apple Intelligence can start a draft, and it open
 - `NewDraftIntent` is a plain intent with the phrase "New draft in SDK 58". Siri asks for the subject. It also shows in Spotlight: search for "SDK 58" and tap "New Draft".
 
 Both intents send a `createMailDraft` invocation to JavaScript. `src/demos/mail/use-draft-intents.ts` handles it with `useAppIntents()`, including invocations that arrive while the app is closed.
+
+### Inbox widget
+
+A home screen widget with the unread mail from the Mail tab, written in React with `expo-widgets`. Home screen widgets are new on Android in SDK 58. The same widget has an iOS layout too.
+
+- `src/demos/inbox-widget/inbox-widget.android.tsx` uses Expo UI's Jetpack Compose components, which `expo-widgets` draws with Glance. Its colors come from the wallpaper's Material You palette (`getMaterialColors()`).
+- `src/demos/inbox-widget/inbox-widget.tsx` is the iOS layout, with SwiftUI components.
+- `app.json` declares the widget for both platforms. On Android, the config plugin needs `"enableAndroid": true`.
+
+The app sends every inbox change to the widget with `updateSnapshot()`, so reading a message in the app updates the count. The widget's "Mark all read" button returns the widget's new props, so it works without the app on screen, and the app mirrors it with `addUserInteractionListener()`.
+
+To add it on Android: long-press the home screen, tap Widgets, and find SDK 58. On iOS: long-press the home screen, tap Edit, then Add Widget, and find SDK 58.
 
 ### Hinge
 

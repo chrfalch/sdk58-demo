@@ -45,7 +45,35 @@
         }
       ],
       "expo-web-browser",
-      "expo-app-intents"
+      "expo-app-intents",
+      [
+        "expo-widgets",
+        {
+          "enableAndroid": true,
+          "widgets": [
+            {
+              "name": "InboxWidget",
+              "displayName": "Inbox",
+              "description": "Unread mail from the SDK 58 demo. Mark it all read from the widget.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium"
+                ],
+                "initialLayout": "./src/demos/inbox-widget/inbox-widget.tsx"
+              },
+              "android": {
+                "minWidth": 250,
+                "minHeight": 180,
+                "targetCellWidth": 3,
+                "targetCellHeight": 2,
+                "resizeMode": "both",
+                "initialLayout": "./src/demos/inbox-widget/inbox-widget.android.tsx"
+              }
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
