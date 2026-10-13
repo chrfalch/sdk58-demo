@@ -14,6 +14,16 @@ bun run web
 
 After the first native build, `bun start` starts Metro for the installed app.
 
+### iPhone Duo
+
+The iPhone Duo simulator and `expo-hinge` need Xcode 27.1 and the iOS 27.1 simulator runtime. Xcode 27.0 stays the default on this Mac, so build with Xcode 27.1 for this project only:
+
+```bash
+DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer bunx expo run:ios -d "iPhone Duo"
+```
+
+Install the runtime with `xcodebuild -downloadPlatform iOS -buildVersion 27.1`. Without `-buildVersion`, Xcode 27.1 downloads the iOS 27.0 runtime.
+
 ## Checks
 
 ```bash
