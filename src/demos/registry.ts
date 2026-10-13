@@ -2,6 +2,7 @@ import type { Href } from 'expo-router';
 import type { ComponentType } from 'react';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import NativeRaceScreen from './native-race';
 import SvgVariablesScreen from './svg-variables';
 import VariableFontsScreen from './variable-fonts';
 
@@ -89,6 +90,15 @@ export const DEMOS: Demo[] = [
     status: 'New',
     changelog: Changelog.other,
     screen: SvgVariablesScreen,
+  },
+  {
+    slug: 'native-race',
+    title: 'Native race',
+    description: 'One Swift function in the module DSL and with @JS, called 100,000 times',
+    systemImage: 'flag.checkered',
+    status: 'Beta',
+    changelog: Changelog.modules2,
+    screen: NativeRaceScreen,
   },
   {
     slug: 'native-tabs',

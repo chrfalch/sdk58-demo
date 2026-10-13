@@ -12,6 +12,7 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | Duo  | Hinge             | Built for iOS 27: `expo-hinge`, `ArrangementView` | New  |
 | More | Variable fonts    | `expo-font` variable fonts                      | New    |
 | More | SVG variables     | `expo-image` `svgVariables`                     | New    |
+| More | Native race       | Expo Modules 2.0: `@JS` against the module DSL  | Beta   |
 | All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
 
 ### Mail
@@ -33,6 +34,29 @@ Roboto Flex is © The Roboto Flex Project Authors, under the SIL Open Font Licen
 ### SVG variables
 
 One SVG file of a house, drawn by `expo-image`. The SVG reads its colors from CSS variables (`var(--roof, #888888)`), and the `svgVariables` prop fills them in, so the picker recolors the roof and the image stays a vector.
+
+### Native race
+
+The local module in `modules/native-race` has the same Swift function twice: once in the module definition DSL, and once as a plain method marked `@JS`, which Expo Modules 2.0 binds at build time.
+
+```swift
+// The old way: describe the function inside the definition DSL.
+Function("addNumbers") { (a: Double, b: Double) in
+  return a + b
+}
+
+// The new way: an ordinary Swift method, exposed to JavaScript with @JS.
+@JS
+private func addNumbersSynthesized(a: Double, b: Double) throws -> Double {
+  return a + b
+}
+```
+
+Tap "Run the race" to call each one 100,000 times. The screen shows both times, how many times faster `@JS` is, and where it measured. Run a release build for fair numbers:
+
+```bash
+bunx expo run:ios --configuration Release
+```
 
 ## Run it
 
