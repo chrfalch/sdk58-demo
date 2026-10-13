@@ -1,6 +1,7 @@
 // copied from nathan schroeder's expo-ui-examples (mit), src/examples/split-view/index.tsx at
-// bf89951. our edits: the info menu replaces the "examples" back button, the drafts are from
-// rami, and a reply keeps one "Re:" and shows its recipient.
+// bf89951. our edits: the info menu replaces the "examples" back button, mailboxes with a
+// count can be selected, the drafts are from rami, and a reply keeps one "Re:" and shows
+// its recipient.
 import { Host } from '@expo/ui';
 import {
   Button,
@@ -349,6 +350,9 @@ function MailboxRow({ mailbox, messages }: { mailbox: Mailbox; messages: Message
     mailbox.id === 'drafts' ? inMailbox.length : inMailbox.filter((m) => m.unread).length;
   // Trash and Archive never show a count, as in Mail.
   const showCount = count > 0 && mailbox.id !== 'trash' && mailbox.id !== 'archive';
+  // The tag goes last, on the outermost view, as in MessageRow. Before the badge, the
+  // list cannot select a mailbox that shows a count.
+  const modifiers = [...(showCount ? [badge(String(count))] : []), tag(mailbox.id)];
 
   return mailbox.color ? (
     // A fixed color goes through `icon`; a `systemImage` takes the tint instead.
@@ -357,14 +361,10 @@ function MailboxRow({ mailbox, messages }: { mailbox: Mailbox; messages: Message
       // Without a size, a custom Label icon renders at its natural symbol size, which
       // is larger than the tinted icons next to it.
       icon={<Image systemName={mailbox.systemImage} size={17} color={mailbox.color} />}
-      modifiers={[tag(mailbox.id), ...(showCount ? [badge(String(count))] : [])]}
+      modifiers={modifiers}
     />
   ) : (
-    <Label
-      title={mailbox.name}
-      systemImage={mailbox.systemImage}
-      modifiers={[tag(mailbox.id), ...(showCount ? [badge(String(count))] : [])]}
-    />
+    <Label title={mailbox.name} systemImage={mailbox.systemImage} modifiers={modifiers} />
   );
 }
 
