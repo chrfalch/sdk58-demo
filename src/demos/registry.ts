@@ -2,6 +2,8 @@ import type { Href } from 'expo-router';
 import type { ComponentType } from 'react';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import VariableFontsScreen from './variable-fonts';
+
 /**
  * the label the sdk 58 changelog gives a feature. `New` is for features the changelog adds
  * without a label. a demo never shows a stronger label than the changelog.
@@ -68,6 +70,15 @@ export const DEMOS: Demo[] = [
     status: 'New',
     changelog: Changelog.ios27,
     href: '/duo',
+  },
+  {
+    slug: 'variable-fonts',
+    title: 'Variable fonts',
+    description: 'One font file, nine weights and their italics, with expo-font',
+    systemImage: 'textformat.size',
+    status: 'New',
+    changelog: Changelog.other,
+    screen: VariableFontsScreen,
   },
   {
     slug: 'native-tabs',

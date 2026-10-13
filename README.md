@@ -10,6 +10,7 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | ---- | ----------------- | ----------------------------------------------- | ------ |
 | Mail | Mail              | Expo UI `NavigationSplitView` on iOS            | New    |
 | Duo  | Hinge             | Built for iOS 27: `expo-hinge`, `ArrangementView` | New  |
+| More | Variable fonts    | `expo-font` variable fonts                      | New    |
 | All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
 
 ### Mail
@@ -19,6 +20,14 @@ A three-column mail client built with Expo UI's `NavigationSplitView`: mailboxes
 ### Hinge
 
 The live hinge angle and status from `expo-hinge`, and the lowest and highest angle of the session. Open the Duo, and Expo UI's `ArrangementView` splits the screen into two panels. The picker switches the arrangement between adaptive, side by side, and stacked. On a device without a hinge, the tab says that it needs an iPhone Duo.
+
+### Variable fonts
+
+One Roboto Flex file, loaded with `useFonts`, gives nine weights and their italics. React Native 0.88's `fontVariationSettings` sets the weight and slant axes, and a slider moves the weight from 100 to 1000 live.
+
+On iOS, `fontWeight: '100'` and `'200'` do not pick the Thin and ExtraLight instances of this font: React Native maps 100 to Apple's UltraLight and 200 to Apple's Thin, so 200 renders as the Thin instance. `fontVariationSettings` sets the axis value itself, so every weight is correct.
+
+Roboto Flex is © The Roboto Flex Project Authors, under the SIL Open Font License 1.1 (`src/demos/variable-fonts/OFL.txt`).
 
 ## Run it
 
