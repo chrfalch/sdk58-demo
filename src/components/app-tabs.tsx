@@ -1,22 +1,29 @@
 import { NativeTabs } from 'expo-router/native-tabs';
+import { Platform } from 'react-native';
 
-// expo router native tabs, stable in sdk 58: a native tab bar with sf symbols.
+// expo router native tabs, stable in sdk 58: sf symbols on ios, material symbols on android.
 export default function AppTabs() {
   return (
     <NativeTabs sidebarAdaptable>
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Mail</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'envelope', selected: 'envelope.fill' }} />
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'envelope', selected: 'envelope.fill' }}
+          md="mail"
+        />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="duo">
-        <NativeTabs.Trigger.Label>Duo</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="rectangle.split.2x1" />
+        {/* the hinge tab runs on the iphone duo and on android foldables. */}
+        <NativeTabs.Trigger.Label>
+          {Platform.OS === 'ios' ? 'Duo' : 'Fold'}
+        </NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="rectangle.split.2x1" md="devices_fold" />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="more">
         <NativeTabs.Trigger.Label>More</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="square.grid.2x2" />
+        <NativeTabs.Trigger.Icon sf="square.grid.2x2" md="grid_view" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

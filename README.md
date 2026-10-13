@@ -1,24 +1,28 @@
 # Expo SDK 58 demo
 
-An iOS app that shows what is new in Expo SDK 58. It is built for the iPhone Duo, and it is the demo app of the "What's new in Expo SDK 58" video.
+An app that shows what is new in Expo SDK 58, on iOS and Android. It is built for foldables: the iPhone Duo and Android foldables such as the Pixel Fold. It is the demo app of the "What's new in Expo SDK 58" video.
 
 Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog/sdk-58-beta) (Stable, New, Beta, Alpha, or Experimental) and links to its section. Tap the info button on a demo screen to see them.
 
 ## What is in it
 
-| Tab  | Demo              | SDK 58 feature                                  | Label  |
-| ---- | ----------------- | ----------------------------------------------- | ------ |
-| Mail | Mail              | Expo UI `NavigationSplitView` on iOS            | New    |
-| Mail | App Intents       | `expo-app-intents`: Siri and Shortcuts create a draft | Alpha |
-| Duo  | Hinge             | Built for iOS 27: `expo-hinge`, `ArrangementView` | New  |
-| More | Variable fonts    | `expo-font` variable fonts                      | New    |
-| More | SVG variables     | `expo-image` `svgVariables`                     | New    |
-| More | Native race       | Expo Modules 2.0: `@JS` against the module DSL  | Beta   |
-| All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
+| Tab      | Demo              | SDK 58 feature                                        | Label  | Platforms    |
+| -------- | ----------------- | ----------------------------------------------------- | ------ | ------------ |
+| Mail     | Mail              | Expo UI `NavigationSplitView` on iOS                  | New    | iOS, Android |
+| Mail     | App Intents       | `expo-app-intents`: Siri and Shortcuts create a draft | Alpha  | iOS          |
+| Duo/Fold | Hinge             | `expo-hinge`, and `ArrangementView` on iOS            | New    | iOS, Android |
+| More     | Variable fonts    | `expo-font` variable fonts                            | New    | iOS, Android |
+| More     | SVG variables     | `expo-image` `svgVariables`                           | New    | iOS, Android |
+| More     | Native race       | Expo Modules 2.0: `@JS` against the module DSL        | Beta   | iOS          |
+| All      | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`           | Stable | iOS, Android |
+
+On Android, the tabs are Mail, Fold, and More, and the screens use Jetpack Compose through Expo UI.
 
 ### Mail
 
 A three-column mail client built with Expo UI's `NavigationSplitView`: mailboxes, messages, and the open message. On the unfolded Duo (or an iPad), the columns are side by side. On the folded Duo (or an iPhone), they become a stack. Fold or unfold the Duo, and the open message stays open. Swipe a message to archive, flag, or delete it, and tap Reply to start a draft.
+
+`NavigationSplitView` is SwiftUI only. On Android, the Mail tab is a Material 3 inbox with Expo UI's Jetpack Compose components and the same mail data. On an unfolded foldable, the open message sits beside the list.
 
 ### App Intents
 
@@ -33,9 +37,11 @@ Both intents send a `createMailDraft` invocation to JavaScript. `src/demos/mail/
 
 The live hinge angle and status from `expo-hinge`, and the lowest and highest angle of the session. Open the Duo, and Expo UI's `ArrangementView` splits the screen into two panels. The picker switches the arrangement between adaptive, side by side, and stacked. On a device without a hinge, the tab says that it needs an iPhone Duo.
 
+On Android, the Fold tab shows the same readings in Material 3, side by side when the device is unfolded. Android reports the hinge only while the app's window spans the fold, and never reports "closed".
+
 ### Variable fonts
 
-One Roboto Flex file, loaded with `useFonts`, gives nine weights and their italics. React Native 0.88's `fontVariationSettings` sets the weight and slant axes, and a slider moves the weight from 100 to 1000 live.
+One Roboto Flex file, loaded with `useFonts`, gives nine weights and their italics. React Native 0.88's `fontVariationSettings` sets the weight and slant axes, and a slider moves the weight from 100 to 1000 live. The slider is a universal Expo UI component: SwiftUI on iOS, Jetpack Compose on Android.
 
 On iOS, `fontWeight: '100'` and `'200'` do not pick the Thin and ExtraLight instances of this font: React Native maps 100 to Apple's UltraLight and 200 to Apple's Thin, so 200 renders as the Thin instance. `fontVariationSettings` sets the axis value itself, so every weight is correct.
 
@@ -43,7 +49,7 @@ Roboto Flex is © The Roboto Flex Project Authors, under the SIL Open Font Licen
 
 ### SVG variables
 
-One SVG file of a house, drawn by `expo-image`. The SVG reads its colors from CSS variables (`var(--roof, #888888)`), and the `svgVariables` prop fills them in, so the picker recolors the roof and the image stays a vector.
+One SVG file of a house, drawn by `expo-image` on iOS and Android. The SVG reads its colors from CSS variables (`var(--roof, #888888)`), and the `svgVariables` prop fills them in, so the picker recolors the roof and the image stays a vector.
 
 ### Native race
 
@@ -70,11 +76,11 @@ bunx expo run:ios --configuration Release
 
 ## Run it
 
-This app uses a development build, not Expo Go. It runs on iOS only, and it needs Xcode 27.
+This app uses a development build, not Expo Go. iOS needs Xcode 27. Android needs the Android SDK and JDK 17.
 
 ```bash
 bun install
-bun run ios
+bun run ios       # or: bun run android
 ```
 
 After the first native build, `bun start` starts Metro for the installed app.
@@ -99,6 +105,16 @@ bun run duo 135      # any angle from 0 to 180
 ```
 
 Xcode 27.1's Device Hub app has the same control.
+
+### Android foldables
+
+Any Android emulator runs the app. For the Fold tab, create a foldable emulator, such as a Pixel 9 Pro Fold on Android 16 (API 36), in Android Studio's Device Manager or with `avdmanager`. To fold, unfold, and set the hinge angle from the terminal:
+
+```bash
+adb emu fold
+adb emu unfold
+adb emu sensor set hinge-angle0 90
+```
 
 ### Watch the simulator in the browser
 
@@ -129,7 +145,7 @@ Most demo code is copied from code that already runs on SDK 58, and each copied 
 bun run check              # typecheck and lint, zero warnings
 bunx expo install --check  # SDK-compatible dependency versions
 bunx expo-doctor@latest
-bun run export             # a production iOS bundle
+bun run export             # production bundles for iOS and Android
 ```
 
 ## Changes to the template

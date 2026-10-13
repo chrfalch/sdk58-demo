@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "packageManager": "bun@1.3.14",
   "dependencies": {
+    "@expo/material-symbols": "^0.1.1",
     "@expo/ui": "~58.0.16",
     "expo": "~58.0.8",
     "expo-app-intents": "~0.5.5",
@@ -40,10 +41,11 @@
   "scripts": {
     "start": "expo start",
     "ios": "expo run:ios",
+    "android": "expo run:android",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "check": "bun run typecheck && bun run lint",
-    "export": "expo export --platform ios",
+    "export": "expo export --platform all",
     "duo": "sh scripts/duo-hinge.sh"
   },
   "private": true

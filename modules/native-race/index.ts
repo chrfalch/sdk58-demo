@@ -1,6 +1,6 @@
 // from expo's bare-expo benchmarking module (mit), apps/bare-expo/modules/benchmarking/src/
 // BenchmarkingExpoModule.ts at c35f5fe7c8a, cut down to one function pair.
-import { NativeModule, requireNativeModule } from 'expo';
+import { NativeModule, requireOptionalNativeModule } from 'expo';
 
 declare class NativeRaceModule extends NativeModule {
   /** `Function("addNumbers")` in the module definition DSL. */
@@ -9,4 +9,5 @@ declare class NativeRaceModule extends NativeModule {
   addNumbersSynthesized(a: number, b: number): number;
 }
 
-export default requireNativeModule<NativeRaceModule>('NativeRace');
+// optional, because the module is swift only: on android this is null instead of a crash.
+export default requireOptionalNativeModule<NativeRaceModule>('NativeRace');

@@ -16,7 +16,7 @@ import { useRouter } from 'expo-router';
 
 import { StatusBadge } from '@/components/status-badge';
 import { openChangelog } from '@/demos/demo-toolbar';
-import { DEMOS, type Demo } from '@/demos/registry';
+import { DEMOS_HERE, type Demo } from '@/demos/registry';
 
 function DemoRow({ demo, onPress }: { demo: Demo; onPress: () => void }) {
   return (
@@ -53,8 +53,8 @@ export default function MoreScreen() {
     else if (demo.href) router.navigate(demo.href);
     else openChangelog(demo);
   };
-  const inMore = DEMOS.filter((d) => d.screen);
-  const elsewhere = DEMOS.filter((d) => !d.screen);
+  const inMore = DEMOS_HERE.filter((d) => d.screen);
+  const elsewhere = DEMOS_HERE.filter((d) => !d.screen);
 
   return (
     <Host style={{ flex: 1 }}>
