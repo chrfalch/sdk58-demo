@@ -1,28 +1,17 @@
 {
   "expo": {
-    "name": "demo-app",
-    "slug": "demo-app",
+    "name": "SDK 58",
+    "slug": "sdk58-demo",
     "version": "1.0.0",
+    "platforms": ["ios"],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "demoapp",
+    "scheme": "sdk58demo",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.ramimaalouf.demo-app"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "server",
-      "favicon": "./assets/images/favicon.png"
+      "bundleIdentifier": "com.ramimaalouf.sdk58demo",
+      "supportsTablet": true
     },
     "plugins": [
       "expo-router",
@@ -41,7 +30,8 @@
             "usePrecompiledModules": false
           }
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,22 +1,29 @@
-# Expo SDK 58 demo app
+# Expo SDK 58 demo
 
-The example app for the "What's new in Expo SDK 58" video. It starts from the SDK 58 default template (`create-expo-app --template default@sdk-58`). SDK 58 features are added one at a time on top of it.
+An iOS app that shows what is new in Expo SDK 58. It is built for the iPhone Duo, and it is the demo app of the "What's new in Expo SDK 58" video.
+
+Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog/sdk-58-beta) (Stable, New, Beta, Alpha, or Experimental) and links to its section. Tap the info button on a demo screen to see them.
+
+## What is in it
+
+| Tab  | Demo              | SDK 58 feature                                  | Label  |
+| ---- | ----------------- | ----------------------------------------------- | ------ |
+| All  | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`     | Stable |
 
 ## Run it
 
-This app uses a development build, not Expo Go. Native code runs on iOS (Xcode 27) and Android.
+This app uses a development build, not Expo Go. It runs on iOS only, and it needs Xcode 27.
 
 ```bash
 bun install
-bun run ios       # or: bun run android
-bun run web
+bun run ios
 ```
 
 After the first native build, `bun start` starts Metro for the installed app.
 
 ### iPhone Duo
 
-The iPhone Duo simulator and `expo-hinge` need Xcode 27.1 and the iOS 27.1 simulator runtime. Xcode 27.0 stays the default on this Mac, so build with Xcode 27.1 for this project only:
+The iPhone Duo simulator and `expo-hinge` need Xcode 27.1 and the iOS 27.1 simulator runtime. If Xcode 27.0 is your default Xcode, build with Xcode 27.1 for this project only:
 
 ```bash
 DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer bunx expo run:ios -d "iPhone Duo"
@@ -24,22 +31,36 @@ DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer bunx expo run:ios 
 
 Install the runtime with `xcodebuild -downloadPlatform iOS -buildVersion 27.1`. Without `-buildVersion`, Xcode 27.1 downloads the iOS 27.0 runtime.
 
+## How the code is organized
+
+- `src/app/`: the routes. `index.tsx` is the Mail tab, `duo/` is the Duo tab, and `more/` is the More tab.
+- `src/demos/<slug>/`: one folder per demo, with all of its code.
+- `src/demos/registry.ts`: one line per demo, with its title, changelog label, and changelog section.
+
+To remove a demo, delete its folder and its line in the registry.
+
+## Credits
+
+Most demo code is copied from code that already runs on SDK 58, and each copied file names its source:
+
+- [expo-ui-examples](https://github.com/SchroederNathan/expo-ui-examples) by Nathan Schroeder (MIT)
+- [native-component-list](https://github.com/expo/expo/tree/main/apps/native-component-list), Expo's own test app (MIT)
+
 ## Checks
 
 ```bash
 bun run check              # typecheck and lint, zero warnings
 bunx expo install --check  # SDK-compatible dependency versions
 bunx expo-doctor@latest
-bun run export             # production bundles for iOS, Android, and web
+bun run export             # a production iOS bundle
 ```
 
 ## Changes to the template
 
-- `src/types/expo.d.ts` references `expo/types`, so CSS imports type-check before Metro generates `expo-env.d.ts`.
-- `src/components/app-tabs.web.tsx` gives `TabButton` the `Pressable` ref type. React Native 0.88 types this ref as a native element, and the template's slot props do not match it.
-- `src/hooks/use-color-scheme.web.ts` uses `useSyncExternalStore` for the hydration check. The template set state in an effect.
+- The welcome screens, the web and Android files, and their assets are removed. The app is iOS only (`"platforms": ["ios"]`).
+- `src/types/expo.d.ts` references `expo/types`, so the app type-checks before Metro generates `expo-env.d.ts`.
 - ESLint is on version 9. `expo install eslint` picks ESLint 10, and `eslint-plugin-react` crashes on it (`contextOrFilename.getFilename is not a function`).
-- `expo-dev-client` is installed, and `bun run ios` / `bun run android` make development builds.
+- `expo-dev-client` is installed, and `bun run ios` makes a development build.
 
 ## Known issue: precompiled modules are off on iOS
 
