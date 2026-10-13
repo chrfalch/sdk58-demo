@@ -1,56 +1,48 @@
-# Welcome to your Expo app 👋
+# Expo SDK 58 demo app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The example app for the "What's new in Expo SDK 58" video. It starts from the SDK 58 default template (`create-expo-app --template default@sdk-58`). SDK 58 features are added one at a time on top of it.
 
-## Get started
+## Run it
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+This app uses a development build, not Expo Go. Native code runs on iOS (Xcode 27) and Android.
 
 ```bash
-npm run reset-project
+bun install
+bun run ios       # or: bun run android
+bun run web
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+After the first native build, `bun start` starts Metro for the installed app.
 
-### Other setup steps
+## Checks
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+bun run check              # typecheck and lint, zero warnings
+bunx expo install --check  # SDK-compatible dependency versions
+bunx expo-doctor@latest
+bun run export             # production bundles for iOS, Android, and web
+```
 
-## Learn more
+## Changes to the template
 
-To learn more about developing your project with Expo, look at the following resources:
+- `src/types/expo.d.ts` references `expo/types`, so CSS imports type-check before Metro generates `expo-env.d.ts`.
+- `src/components/app-tabs.web.tsx` gives `TabButton` the `Pressable` ref type. React Native 0.88 types this ref as a native element, and the template's slot props do not match it.
+- `src/hooks/use-color-scheme.web.ts` uses `useSyncExternalStore` for the hydration check. The template set state in an effect.
+- ESLint is on version 9. `expo install eslint` picks ESLint 10, and `eslint-plugin-react` crashes on it (`contextOrFilename.getFilename is not a function`).
+- `expo-dev-client` is installed, and `bun run ios` / `bun run android` make development builds.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Known issue: precompiled modules are off on iOS
 
-## Join the community
+`app.json` sets `expo-build-properties` `ios.usePrecompiledModules` to `false`. Every Expo module builds from source.
 
-Join our community of developers creating universal apps.
+With precompiled modules on (the SDK 58 default), the app built with Xcode 27 stops at launch:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+Symbol not found: _swift_allocateMetadataPack
+Referenced from: ExpoModulesCore.framework/ExpoModulesCore
+Expected in:     ExpoModulesJSI.framework/ExpoModulesJSI
+```
+
+The precompiled `expo-modules-core` 58.0.16 was built with the iOS 26.4 SDK. It binds the Swift parameter pack runtime symbols to `ExpoModulesJSI`. `expo-modules-jsi` 58.0.11 builds from source on this machine (Xcode 27), and that build does not export them. Both versions were published on October 13, 2026. The `expo-modules-jsi` 58.0.11 changelog adds parameter pack APIs.
+
+Remove the `expo-build-properties` entry when a fixed `expo-modules-core` or `expo-modules-jsi` is published, then run `bunx expo prebuild --platform ios --clean` and launch the app again.
