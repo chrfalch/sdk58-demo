@@ -32,6 +32,8 @@ yarn-error.*
 
 # local env files
 .env*.local
+# written by eas simulator:start: the current cloud simulator session
+.env.eas-simulator
 
 # typescript
 *.tsbuildinfo
