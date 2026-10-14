@@ -18,5 +18,12 @@ if [ -z "$udid" ]; then
 fi
 
 # the hinge command talks to a serve-sim helper for the device. this starts one, or reuses it.
+# expo device hub, inside metro, can register itself as the device's helper when the simulator
+# boots, and that helper drops hinge commands from the terminal. so the script forgets it and
+# starts its own. the device hub dashboard keeps working.
+state="${TMPDIR:-/tmp}/serve-sim/server-$udid.json"
+if [ -f "$state" ] && grep -q expo-device-hub "$state"; then
+  rm "$state"
+fi
 node "$cli" --detach --no-preview "$udid" > /dev/null
 node "$cli" hinge "$1" -d "$udid"
