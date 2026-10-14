@@ -1,6 +1,7 @@
 import AppsIcon from '@expo/material-symbols/apps.xml';
 import BottomNavigationIcon from '@expo/material-symbols/bottom_navigation.xml';
 import BrushIcon from '@expo/material-symbols/brush.xml';
+import DateRangeIcon from '@expo/material-symbols/date_range.xml';
 import DevicesFoldIcon from '@expo/material-symbols/devices_fold.xml';
 import FlagIcon from '@expo/material-symbols/flag.xml';
 import MailIcon from '@expo/material-symbols/mail.xml';
@@ -11,6 +12,7 @@ import type { ComponentType } from 'react';
 import { Platform, type ImageSourcePropType } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import ComposeComponentsScreen from './compose-components';
 import NativeRaceScreen from './native-race';
 import SvgVariablesScreen from './svg-variables';
 import VariableFontsScreen from './variable-fonts';
@@ -116,6 +118,17 @@ export const DEMOS: Demo[] = [
     status: 'New',
     changelog: Changelog.ios27,
     href: '/duo',
+  },
+  {
+    slug: 'compose-components',
+    title: 'Compose components',
+    description: 'DateRangePicker, its dialog, and VerticalSlider, new in Expo UI',
+    systemImage: 'calendar',
+    materialIcon: DateRangeIcon,
+    status: 'New',
+    changelog: Changelog.expoUi,
+    screen: ComposeComponentsScreen,
+    platforms: ['android'],
   },
   {
     slug: 'variable-fonts',

@@ -6,16 +6,17 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 
 ## What is in it
 
-| Tab      | Demo              | SDK 58 feature                                        | Label  | Platforms    |
-| -------- | ----------------- | ----------------------------------------------------- | ------ | ------------ |
-| Mail     | Mail              | Expo UI `NavigationSplitView` on iOS                  | New    | iOS, Android |
-| Mail     | App Intents       | `expo-app-intents`: Siri and Shortcuts create a draft | Alpha  | iOS          |
-| Home     | Inbox widget      | `expo-widgets` home screen widgets on Android         | New    | Android, iOS |
-| Duo/Fold | Hinge             | `expo-hinge`, and `ArrangementView` on iOS            | New    | iOS, Android |
-| More     | Variable fonts    | `expo-font` variable fonts                            | New    | iOS, Android |
-| More     | SVG variables     | `expo-image` `svgVariables`                           | New    | iOS, Android |
-| More     | Native race       | Expo Modules 2.0: `@JS` against the module DSL        | Beta   | iOS, Android |
-| All      | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`           | Stable | iOS, Android |
+| Tab      | Demo               | SDK 58 feature                                        | Label  | Platforms    |
+| -------- | ------------------ | ----------------------------------------------------- | ------ | ------------ |
+| Mail     | Mail               | Expo UI `NavigationSplitView` on iOS                  | New    | iOS, Android |
+| Mail     | App Intents        | `expo-app-intents`: Siri and Shortcuts create a draft | Alpha  | iOS          |
+| Home     | Inbox widget       | `expo-widgets` home screen widgets on Android         | New    | Android, iOS |
+| Duo/Fold | Hinge              | `expo-hinge`, and `ArrangementView` on iOS            | New    | iOS, Android |
+| More     | Compose components | Expo UI `DateRangePicker` and `VerticalSlider`        | New    | Android      |
+| More     | Variable fonts     | `expo-font` variable fonts                            | New    | iOS, Android |
+| More     | SVG variables      | `expo-image` `svgVariables`                           | New    | iOS, Android |
+| More     | Native race        | Expo Modules 2.0: `@JS` against the module DSL        | Beta   | iOS, Android |
+| All      | Tabs and toolbars  | Expo Router native tabs and `Stack.Toolbar`           | Stable | iOS, Android |
 
 On Android, the tabs are Mail, Fold, and More, and the screens use Jetpack Compose through Expo UI.
 
@@ -51,6 +52,16 @@ To add it on Android: long-press the home screen, tap Widgets, and find SDK 58. 
 The live hinge angle and status from `expo-hinge`, and the lowest and highest angle of the session. Open the Duo, and Expo UI's `ArrangementView` splits the screen into two panels. The picker switches the arrangement between adaptive, side by side, and stacked. On a device without a hinge, the tab says that it needs an iPhone Duo.
 
 On Android, the Fold tab shows the same readings in Material 3, side by side when the device is unfolded. Android reports the hinge only while the app's window spans the fold, and never reports "closed".
+
+### Compose components
+
+Three Jetpack Compose components that are new in Expo UI, each in a small real use:
+
+- `DateRangePicker`: pick your days off. The title shows the range and the number of days.
+- `DateRangePickerDialog`: the same picker in a dialog. A range saved in the dialog moves the inline picker too.
+- `VerticalSlider`: four volume sliders, like the Android volume panel. They only move: they do not set a volume.
+
+Fold or unfold the device, and the range and the sliders stay where they were.
 
 ### Variable fonts
 
