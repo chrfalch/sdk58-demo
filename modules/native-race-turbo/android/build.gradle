@@ -1,0 +1,21 @@
+// a react native library with codegen. expo autolinking finds it in modules/ and links it like
+// a library from npm, so the generated android project needs no changes.
+apply plugin: 'com.android.library'
+// expo apps opt out of agp 9's built-in kotlin (android/gradle.properties), so kotlin comes from
+// its own plugin there.
+if (providers.gradleProperty('android.builtInKotlin').orNull == 'false') {
+  apply plugin: 'org.jetbrains.kotlin.android'
+}
+apply plugin: 'com.facebook.react'
+
+android {
+  namespace 'expo.modules.nativerace.turbo'
+  compileSdk rootProject.ext.compileSdkVersion
+  defaultConfig {
+    minSdk rootProject.ext.minSdkVersion
+  }
+}
+
+dependencies {
+  implementation 'com.facebook.react:react-android'
+}

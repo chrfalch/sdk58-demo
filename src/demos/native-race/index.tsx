@@ -1,44 +1,31 @@
-// the timing loop (timeSync, 100,000 calls, one warm-up call first) is copied from expo's
-// native-component-list (mit), src/screens/ModulesCore/Benchmarks/benchmarks.ts at c35f5fe7c8a.
-// the module is in modules/native-race.
+// the native race on ios: the same swift function in the module DSL and with @JS. the race itself
+// is in race.ts, and index.android.tsx adds a turbomodule on android.
 import { Host } from '@expo/ui';
 import { Button, Form, LabeledContent, Section, Text as SwiftUIText } from '@expo/ui/swift-ui';
 import { disabled, font, foregroundStyle, monospacedDigit } from '@expo/ui/swift-ui/modifiers';
-import * as Device from 'expo-device';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useSystemColors } from '@/hooks/use-system-colors';
 
-import NativeRace from '../../../modules/native-race';
-
-const ITERATIONS = 100_000;
-
-function timeSync(iterations: number, fn: () => void): number {
-  const start = performance.now();
-  for (let i = 0; i < iterations; i++) {
-    fn();
-  }
-  return performance.now() - start;
-}
-
-type Result = { dsl: number; js: number };
-
-// where the numbers come from, so the screen never claims more than it measured. a simulator's
-// model name is "Simulator iOS", and its device name is the simulator's name, such as "iPhone Duo".
-const DEVICE = Device.isDevice
-  ? (Device.modelName ?? 'this iPhone')
-  : `${Device.deviceName ?? 'iOS'} simulator on this Mac`;
-const WHERE = `${__DEV__ ? 'Debug' : 'Release'} build, ${DEVICE}.`;
-const DEBUG_NOTE = __DEV__ ? ' A debug build is slower: run a release build for fair numbers.' : '';
+import {
+  compareToJS,
+  DEBUG_NOTE,
+  ITERATIONS,
+  milliseconds,
+  racers,
+  runRace,
+  WHERE,
+  type Lap,
+  type Racer,
+} from './race';
 
 const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
 
 export default function NativeRaceScreen() {
-  // the module is swift only, and the registry lists this demo on ios only. this is the safety
-  // net for a deep link on android.
-  if (!NativeRace) return <Unavailable />;
-  return <Race race={NativeRace} />;
+  // the safety net for a build without the native module.
+  if (!racers) return <Unavailable />;
+  return <Race racers={racers} />;
 }
 
 function Unavailable() {
@@ -46,32 +33,26 @@ function Unavailable() {
   return (
     <View style={[styles.unavailable, { backgroundColor: colors.background }]}>
       <Text style={[styles.unavailableText, { color: colors.secondaryLabel }]}>
-        The native race runs on iOS only.
+        This build has no native race module.
       </Text>
     </View>
   );
 }
 
-function Race({ race }: { race: NonNullable<typeof NativeRace> }) {
-  const [result, setResult] = useState<Result | null>(null);
+function Race({ racers }: { racers: Racer[] }) {
+  const [laps, setLaps] = useState<Lap[] | null>(null);
   const [running, setRunning] = useState(false);
 
   const run = () => {
     setRunning(true);
     // the loops block the JS thread, so the button shows "Running" first.
     setTimeout(() => {
-      race.addNumbers(0, 1);
-      const dsl = timeSync(ITERATIONS, () => {
-        race.addNumbers(2, 5);
-      });
-      race.addNumbersSynthesized(0, 1);
-      const js = timeSync(ITERATIONS, () => {
-        race.addNumbersSynthesized(2, 5);
-      });
-      setResult({ dsl, js });
+      setLaps(runRace(racers));
       setRunning(false);
     }, 50);
   };
+
+  const dsl = laps ? compareToJS(laps).find((other) => other.name === 'Function DSL') : undefined;
 
   return (
     <Host style={{ flex: 1 }}>
@@ -79,26 +60,25 @@ function Race({ race }: { race: NonNullable<typeof NativeRace> }) {
         <Section
           title={`${ITERATIONS.toLocaleString()} calls to addNumbers(2, 5)`}
           footer={<SwiftUIText>{`Measured here: ${WHERE}${DEBUG_NOTE}`}</SwiftUIText>}>
-          <LabeledContent label="Function DSL">
-            <SwiftUIText modifiers={[monospacedDigit(), secondary]}>
-              {milliseconds(result?.dsl)}
-            </SwiftUIText>
-          </LabeledContent>
-          <LabeledContent label="@JS">
-            <SwiftUIText modifiers={[monospacedDigit(), secondary]}>
-              {milliseconds(result?.js)}
-            </SwiftUIText>
-          </LabeledContent>
-          {result ? (
+          {racers.map((racer) => (
+            <LabeledContent key={racer.name} label={racer.name}>
+              <SwiftUIText modifiers={[monospacedDigit(), secondary]}>
+                {milliseconds(laps?.find((lap) => lap.name === racer.name)?.ms)}
+              </SwiftUIText>
+            </LabeledContent>
+          ))}
+          {dsl ? (
             <SwiftUIText
               modifiers={[font({ textStyle: 'title', weight: 'bold' }), monospacedDigit()]}>
-              {`@JS is ${(result.dsl / result.js).toFixed(1)}× faster`}
+              {dsl.times >= 1
+                ? `@JS is ${dsl.times.toFixed(1)}× faster`
+                : `@JS is ${(1 / dsl.times).toFixed(1)}× slower`}
             </SwiftUIText>
           ) : null}
         </Section>
         <Section>
           <Button
-            label={running ? 'Running' : result ? 'Run again' : 'Run the race'}
+            label={running ? 'Running' : laps ? 'Run again' : 'Run the race'}
             systemImage="flag.checkered"
             onPress={run}
             modifiers={[disabled(running)]}
@@ -107,10 +87,6 @@ function Race({ race }: { race: NonNullable<typeof NativeRace> }) {
       </Form>
     </Host>
   );
-}
-
-function milliseconds(value: number | undefined) {
-  return value === undefined ? 'Not run' : `${value.toFixed(1)} ms`;
 }
 
 const styles = StyleSheet.create({

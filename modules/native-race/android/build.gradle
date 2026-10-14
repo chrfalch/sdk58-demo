@@ -1,0 +1,23 @@
+// from expo's bare-expo modules (mit) at c35f5fe7c8a: benchmarking/android/build.gradle, plus
+// `v2 true` from expo-v2-demo/android/build.gradle, which turns on the expo modules 2.0
+// compiler plugin for this project.
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.nativerace'
+version = '1.0.0'
+
+expoModule {
+  canBePublished false
+  v2 true
+}
+
+android {
+  namespace "expo.modules.nativerace"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}

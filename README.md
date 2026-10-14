@@ -14,7 +14,7 @@ Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog
 | Duo/Fold | Hinge             | `expo-hinge`, and `ArrangementView` on iOS            | New    | iOS, Android |
 | More     | Variable fonts    | `expo-font` variable fonts                            | New    | iOS, Android |
 | More     | SVG variables     | `expo-image` `svgVariables`                           | New    | iOS, Android |
-| More     | Native race       | Expo Modules 2.0: `@JS` against the module DSL        | Beta   | iOS          |
+| More     | Native race       | Expo Modules 2.0: `@JS` against the module DSL        | Beta   | iOS, Android |
 | All      | Tabs and toolbars | Expo Router native tabs and `Stack.Toolbar`           | Stable | iOS, Android |
 
 On Android, the tabs are Mail, Fold, and More, and the screens use Jetpack Compose through Expo UI.
@@ -87,6 +87,25 @@ Tap "Run the race" to call each one 100,000 times. The screen shows both times, 
 bunx expo run:ios --configuration Release
 ```
 
+On Android, the race has three runners, because the SDK 58 changelog also measures React Native's TurboModules on Android:
+
+- `NativeRaceModule.kt`: the same function in the Kotlin module DSL.
+- `NativeRaceV2Module.kt`: a plain Kotlin method marked `@JS`. Kotlin modules 2.0 extend a different `Module` class, so this one is its own module. `v2 true` in `android/build.gradle` turns on the Expo Modules 2.0 compiler plugin.
+- `modules/native-race-turbo`: a TurboModule with a codegen spec (`src/NativeRaceTurbo.ts`). Expo autolinking finds it in `modules/` and links it like a library from npm, so the generated `android/` folder needs no changes.
+
+```kotlin
+// The new way: an ordinary Kotlin method, exposed to JavaScript with @JS.
+@ExpoModule("NativeRaceV2")
+class NativeRaceV2Module : Module() {
+  @JS
+  fun addNumbers(a: Double, b: Double): Double = a + b
+}
+```
+
+```bash
+bunx expo run:android --variant release
+```
+
 ## Run it
 
 This app uses a development build, not Expo Go. iOS needs Xcode 27. Android needs the Android SDK and JDK 17.
@@ -142,6 +161,8 @@ The app includes [Expo Device Hub](https://github.com/expo/expo-device-hub), an 
 - `src/app/`: the routes. `index.tsx` is the Mail tab, `duo/` is the Duo tab, and `more/` is the More tab.
 - `src/demos/<slug>/`: one folder per demo, with all of its code.
 - `src/demos/registry.ts`: one line per demo, with its title, changelog label, and changelog section.
+- `modules/`: the local native modules of the native race.
+- `app-intents/`: the App Intents, in Swift.
 
 To remove a demo, delete its folder and its line in the registry.
 

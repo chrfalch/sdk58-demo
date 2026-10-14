@@ -140,14 +140,15 @@ export const DEMOS: Demo[] = [
   {
     slug: 'native-race',
     title: 'Native race',
-    description: 'One Swift function in the module DSL and with @JS, called 100,000 times',
+    description: Platform.select({
+      ios: 'One Swift function in the module DSL and with @JS, called 100,000 times',
+      default: 'One Kotlin function in the module DSL, with @JS, and as a TurboModule',
+    }),
     systemImage: 'flag.checkered',
     materialIcon: FlagIcon,
     status: 'Beta',
     changelog: Changelog.modules2,
     screen: NativeRaceScreen,
-    // the module is swift only. the kotlin @JS api is not in the published 58.0.16 packages.
-    platforms: ['ios'],
   },
   {
     slug: 'native-tabs',

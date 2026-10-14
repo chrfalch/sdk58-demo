@@ -1,0 +1,16 @@
+{
+  "name": "native-race-turbo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A React Native TurboModule with one function, for the native race on Android",
+  "main": "src/NativeRaceTurbo.ts",
+  "license": "MIT",
+  "codegenConfig": {
+    "name": "NativeRaceTurboSpec",
+    "type": "modules",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "expo.modules.nativerace.turbo"
+    }
+  }
+}
