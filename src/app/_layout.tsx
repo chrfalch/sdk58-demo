@@ -1,12 +1,14 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { ThemeProvider } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
 import AppTabs from '@/components/app-tabs';
+import { useNavigationTheme } from '@/hooks/use-navigation-theme';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={useNavigationTheme()}>
+      {/* dark status bar icons in light mode. android otherwise keeps them white on any screen. */}
+      <StatusBar style="auto" />
       <AppTabs />
     </ThemeProvider>
   );
