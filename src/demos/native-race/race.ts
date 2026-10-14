@@ -38,11 +38,12 @@ export function compareToJS(laps: Lap[]): { name: string; times: number }[] {
 // where the numbers come from, so the screen never claims more than it measured. an ios
 // simulator's model name is "Simulator iOS", and its device name is the simulator's name, such as
 // "iPhone Duo". an android emulator's model and device names are both "sdk_gphone64_arm64".
+// the text does not say where the simulator runs: it can be on this mac or in eas simulator.
 const DEVICE = Device.isDevice
   ? (Device.modelName ?? 'this device')
   : Platform.OS === 'ios'
-    ? `${Device.deviceName ?? 'iOS'} simulator on this Mac`
-    : `Android ${Device.osVersion ?? ''} emulator on this Mac`;
+    ? `${Device.deviceName ?? 'iOS'} simulator`
+    : `Android ${Device.osVersion ?? ''} emulator`;
 
 export const WHERE = `${__DEV__ ? 'Debug' : 'Release'} build, ${DEVICE}.`;
 export const DEBUG_NOTE = __DEV__
