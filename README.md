@@ -117,6 +117,25 @@ class NativeRaceV2Module : Module() {
 bunx expo run:android --variant release
 ```
 
+### Faster Android builds
+
+In SDK 58, `expo-modules-core` ships its C++ libraries prebuilt for Android, so a clean build does not compile them. This script times a clean debug build for all four ABIs, with the prebuilt libraries or compiled from source:
+
+```bash
+bun run android:build-time                 # prebuilt expo-modules-core
+bun run android:build-time --from-source   # compiled from source, as before SDK 58
+```
+
+Our numbers, on an Apple M5 Pro (18 cores) on October 13, 2026:
+
+| Build                                               | Prebuilt     | From source  |
+| --------------------------------------------------- | ------------ | ------------ |
+| `expo-modules-core` alone, its native (CMake) tasks | 13.2 s       | 22.2 s       |
+| `expo-modules-core` alone, wall time                | 20 s         | 29 s         |
+| The whole app, clean, two runs each                 | 150 s, 147 s | 159 s, 140 s |
+
+The prebuilt libraries remove about 9 s of native build time from `expo-modules-core`. In a clean build of the whole app, 18 cores compile other modules at the same time and hide the saving. The changelog measured a blank project on a 12-core M3 Pro (about 80 s down to 39 s), and says the saving is larger on machines with fewer cores, such as CI runners.
+
 ## Run it
 
 This app uses a development build, not Expo Go. iOS needs Xcode 27. Android needs the Android SDK and JDK 17.
@@ -195,7 +214,7 @@ bun run export             # production bundles for iOS and Android
 
 ## Changes to the template
 
-- The welcome screens, the web and Android files, and their assets are removed. The app is iOS only (`"platforms": ["ios"]`).
+- The welcome screens, the web files, and their assets are removed. The app runs on iOS and Android (`"platforms": ["ios", "android"]`).
 - `src/types/expo.d.ts` references `expo/types`, so the app type-checks before Metro generates `expo-env.d.ts`.
 - ESLint is on version 9. `expo install eslint` picks ESLint 10, and `eslint-plugin-react` crashes on it (`contextOrFilename.getFilename is not a function`).
 - `expo-dev-client` is installed, and `bun run ios` makes a development build.

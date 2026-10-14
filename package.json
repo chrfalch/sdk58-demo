@@ -47,7 +47,8 @@
     "typecheck": "tsc --noEmit",
     "check": "bun run typecheck && bun run lint",
     "export": "expo export --platform all",
-    "duo": "sh scripts/duo-hinge.sh"
+    "duo": "sh scripts/duo-hinge.sh",
+    "android:build-time": "sh scripts/android-build-time.sh"
   },
   "private": true
 }
