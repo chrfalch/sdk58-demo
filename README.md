@@ -219,18 +219,20 @@ bun run export             # production bundles for iOS and Android
 - ESLint is on version 9. `expo install eslint` picks ESLint 10, and `eslint-plugin-react` crashes on it (`contextOrFilename.getFilename is not a function`).
 - `expo-dev-client` is installed, and `bun run ios` makes a development build.
 
-## Known issue: precompiled modules are off on iOS
+## Precompiled modules on iOS
 
-`app.json` sets `expo-build-properties` `ios.usePrecompiledModules` to `false`. Every Expo module builds from source.
+SDK 58 links Expo modules on iOS as precompiled XCFrameworks by default, and this app keeps that default for every module except two. `package.json` builds them from source:
 
-With precompiled modules on (the SDK 58 default), the app built with Xcode 27 stops at launch:
-
+```json
+"expo": {
+  "autolinking": {
+    "ios": {
+      "buildFromSource": ["@expo/ui", "expo-hinge"]
+    }
+  }
+}
 ```
-Symbol not found: _swift_allocateMetadataPack
-Referenced from: ExpoModulesCore.framework/ExpoModulesCore
-Expected in:     ExpoModulesJSI.framework/ExpoModulesJSI
-```
 
-The precompiled `expo-modules-core` 58.0.16 was built with the iOS 26.4 SDK. It binds the Swift parameter pack runtime symbols to `ExpoModulesJSI`. `expo-modules-jsi` 58.0.11 builds from source on this machine (Xcode 27), and that build does not export them. Both versions were published on October 13, 2026. The `expo-modules-jsi` 58.0.11 changelog adds parameter pack APIs.
+The iPhone Duo code in these two modules compiles only with the iOS 27.1 SDK (`#if canImport(UIKit, _version: 9127.0.85)` in `expo-hinge`, and `#if canImport(SwiftUICore, _version: 8.0.85)` around `ArrangementView` in `@expo/ui`). The precompiled frameworks of `@expo/ui` 58.0.16 and `expo-hinge` 58.0.1 leave it out: the Hinge tab shows the status, but no angle and no `ArrangementView` split. Built from source with Xcode 27.1, both work.
 
-Remove the `expo-build-properties` entry when a fixed `expo-modules-core` or `expo-modules-jsi` is published, then run `bunx expo prebuild --platform ios --clean` and launch the app again.
+Before `expo-modules-core` 58.0.17, precompiled modules also stopped the app at launch with Xcode 27 (`Symbol not found: _swift_allocateMetadataPack`). `expo` 58.0.9 brings the fixed version.

@@ -8,7 +8,6 @@
     "@expo/ui": "~58.0.16",
     "expo": "~58.0.9",
     "expo-app-intents": "~0.5.5",
-    "expo-build-properties": "~58.0.10",
     "expo-constants": "~58.0.11",
     "expo-dev-client": "~58.0.13",
     "expo-device": "~58.0.5",
@@ -50,5 +49,15 @@
     "duo": "sh scripts/duo-hinge.sh",
     "android:build-time": "sh scripts/android-build-time.sh"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "autolinking": {
+      "ios": {
+        "buildFromSource": [
+          "@expo/ui",
+          "expo-hinge"
+        ]
+      }
+    }
+  }
 }

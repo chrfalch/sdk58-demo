@@ -36,14 +36,6 @@
           "imageWidth": 76
         }
       ],
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "usePrecompiledModules": false
-          }
-        }
-      ],
       "expo-web-browser",
       "expo-app-intents",
       [
