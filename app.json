@@ -75,6 +75,12 @@
           "app-intents"
         ]
       }
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e3ad75d4-706a-43c7-9369-fbb5fb0346c5"
+      }
+    },
+    "owner": "ramimaalouf"
   }
 }
