@@ -16,6 +16,13 @@ final class AppIntentsSetup: Module {
         }
         AppShortcuts.updateAppShortcutParameters()
       }
+
+      // From `expo-app-intents init --examples mail --visual-intelligence` (0.5.5): the drafts that
+      // JavaScript publishes as the `mailDraft` catalog go into Spotlight, and a draft on screen can
+      // carry its identifier, so Siri can act on the draft you are looking at.
+      if #available(iOS 18.0, macOS 15.0, *) {
+        AppEntityIdentifierRegistry.shared.registerIndexed("mailDraft", as: MailDraftEntity.self)
+      }
     }
   }
 }

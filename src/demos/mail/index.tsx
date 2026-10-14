@@ -1,8 +1,8 @@
 // copied from nathan schroeder's expo-ui-examples (mit), src/examples/split-view/index.tsx at
 // bf89951. our edits: the info menu replaces the "examples" back button, mailboxes with a
 // count can be selected, the drafts are from rami, a reply keeps one "Re:" and shows its
-// recipient, app intents can start a draft (use-draft-intents.ts), and the inbox feeds the home
-// screen widget (src/demos/inbox-widget).
+// recipient, app intents can start and open a draft and siri can see the open one
+// (use-draft-intents.ts), and the inbox feeds the home screen widget (src/demos/inbox-widget).
 import { Host } from '@expo/ui';
 import {
   Button,
@@ -41,6 +41,7 @@ import {
   tag,
   tint,
 } from '@expo/ui/swift-ui/modifiers';
+import { appEntityIdentifier } from 'expo-app-intents';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
@@ -58,7 +59,7 @@ import {
   type Message,
   messagesIn,
 } from './mail-data';
-import { useDraftIntents } from './use-draft-intents';
+import { useDraftCatalog, useDraftIntents } from './use-draft-intents';
 
 const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
 const UNREAD_BLUE = '#007AFF';
@@ -155,11 +156,24 @@ export default function SplitViewScreen() {
 
   // App Intents: a draft from Siri, Shortcuts, or Apple Intelligence opens in Drafts, as if
   // you had tapped New Message. The intent opens the app, and this brings the Mail tab forward.
+  // A draft the system opens, such as a Spotlight result, opens the same way.
   const router = useRouter();
-  useDraftIntents((draft) => {
-    startDraft(draft);
-    router.navigate('/');
+  useDraftIntents({
+    onDraft: (draft) => {
+      startDraft(draft);
+      router.navigate('/');
+    },
+    onOpen: (id) => {
+      if (!messages.some((m) => m.id === id && m.mailbox === 'drafts')) return;
+      setMailboxId('drafts');
+      setUnreadOnly(false);
+      setMessageId(id);
+      setCompactColumn('detail');
+      router.navigate('/');
+    },
   });
+  // Siri and Spotlight know the drafts by the catalog this publishes.
+  useDraftCatalog(messagesIn('drafts', messages));
 
   return (
     <>
@@ -480,8 +494,11 @@ function isFromYou(message: Message) {
 
 function MessageDetail({ message }: { message: Message }) {
   const recipient = isFromYou(message) ? message.to : 'Rami';
+  // On-screen intelligence: an open draft tells Siri which `mailDraft` entity it shows, so you can
+  // ask Siri about "this draft". iOS 18.4 and later, in an app built with Xcode 27.
+  const onScreen = message.mailbox === 'drafts' ? [appEntityIdentifier('mailDraft', message.id)] : [];
   return (
-    <ScrollView modifiers={[navigationTitle('')]}>
+    <ScrollView modifiers={[navigationTitle(''), ...onScreen]}>
       <VStack
         alignment="leading"
         spacing={16}

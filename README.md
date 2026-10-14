@@ -28,12 +28,14 @@ A three-column mail client built with Expo UI's `NavigationSplitView`: mailboxes
 
 ### App Intents
 
-Siri, Spotlight, Shortcuts, or Apple Intelligence can start a draft, and it opens in Drafts in the Mail tab. The intents are Swift files in `app-intents/`, which `npx expo-app-intents init --examples mail` created:
+Siri, Spotlight, Shortcuts, or Apple Intelligence can write a draft, and it opens in Drafts in the Mail tab. The intents are Swift files in `app-intents/`, which `npx expo-app-intents init --examples mail --visual-intelligence` created:
 
-- `CreateDraftIntent` adopts Apple's `.mail.createDraft` schema, so Apple Intelligence and Siri find it without a phrase.
-- `NewDraftIntent` is a plain intent with the phrase "New draft in SDK 58". Siri asks for the subject. It also shows in Spotlight: search for "SDK 58" and tap "New Draft".
+- `NewDraftIntent` is a plain intent with the phrase "New draft in SDK 58". Siri asks who the email is for, the subject, and what to say. Then the app opens on the finished draft (`supportedModes` is `.foreground(.deferred)`, and `perform()` calls `continueInForeground()`, iOS 26 and later). It also shows in Spotlight: search for "SDK 58" and tap "New Draft".
+- `CreateDraftIntent` adopts Apple's `.mail.createDraft` schema, so Apple Intelligence and Siri find it without a phrase, and can fill in the recipients, subject, and body from one request.
+- The Mail tab publishes its drafts as the `mailDraft` entity catalog (`setEntityCatalogAsync`). Siri resolves a draft you name from it, and `AppIntentsSetup.swift` mirrors it into Spotlight: search for a draft's subject and tap it, and `OpenMailDraftIntent` (the `.mail.openDraft` schema, iOS 27) opens it.
+- An open draft carries `appEntityIdentifier('mailDraft', id)`, so Siri with Apple Intelligence knows which draft is on screen (on-screen intelligence, iOS 18.4 and later, built with Xcode 27).
 
-Both intents send a `createMailDraft` invocation to JavaScript. `src/demos/mail/use-draft-intents.ts` handles it with `useAppIntents()`, including invocations that arrive while the app is closed.
+The intents send `createMailDraft` and `openMailDraft` invocations to JavaScript. `src/demos/mail/use-draft-intents.ts` handles them with `useAppIntents()`, including invocations that arrive while the app is closed.
 
 ### Inbox widget
 
