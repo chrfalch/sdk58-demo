@@ -2,7 +2,7 @@
 
 An app that shows what is new in Expo SDK 58, on iOS and Android. It is built for foldables: the iPhone Duo and Android foldables such as the Pixel Fold. It is the demo app of the "What's new in Expo SDK 58" video.
 
-Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog/sdk-58-beta) (Stable, New, Beta, Alpha, or Experimental) and links to its section. Tap the info button on a demo screen to see them.
+Each demo shows its label from the [SDK 58 changelog](https://expo.dev/changelog/sdk-58) (Stable, New, Beta, Alpha, or Experimental) and links to its section. Tap the info button on a demo screen to see them.
 
 ## What is in it
 
@@ -140,7 +140,12 @@ The prebuilt libraries remove about 9 s of native build time from `expo-modules-
 
 ## Run it
 
-This app uses a development build, not Expo Go. iOS needs Xcode 27. Android needs the Android SDK and JDK 17.
+This app uses a development build, not Expo Go. iOS needs Xcode 27. Android needs the Android SDK and JDK 17. If Gradle says "SDK location not found" or "Unable to locate a Java Runtime", set `ANDROID_HOME` and `JAVA_HOME`, for example:
+
+```bash
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+```
 
 ```bash
 bun install
@@ -148,6 +153,8 @@ bun run ios       # or: bun run android
 ```
 
 After the first native build, `bun start` starts Metro for the installed app.
+
+To hide the dev menu button on every launch, for example while you film, start Metro with `EXPO_NO_DEV_MENU=1 bun start`.
 
 ### iPhone Duo
 
@@ -221,6 +228,54 @@ bun run export             # production bundles for iOS and Android
 - ESLint is on version 9. `expo install eslint` picks ESLint 10, and `eslint-plugin-react` crashes on it (`contextOrFilename.getFilename is not a function`).
 - `expo-dev-client` is installed, and `bun run ios` makes a development build.
 
+## Upgrade to a newer SDK 58 release
+
+These steps moved the app from `expo` 58.0.9 (React Native 0.88.0-rc.4) to `expo` 58.0.11 (React Native 0.88.0) on October 15, 2026, the day SDK 58 was released.
+
+1. Update every package to the versions of the new `expo`:
+
+   ```bash
+   npx expo install expo@^58.0.0 --fix
+   ```
+
+2. Check the versions again. If `react-native` is still a release candidate, install the version that `expo` lists in its `bundledNativeModules.json`:
+
+   ```bash
+   npx expo install --check
+   EXPO_OFFLINE=1 npx expo install --fix
+   ```
+
+   On October 15, Expo's versions API still listed React Native 0.88.0-rc.4 for SDK 58, while `expo` 58.0.11 expects 0.88.0. So the online check flags 0.88.0. Do not run the online `--fix` again until the API lists 0.88.0, or it moves React Native back to the release candidate.
+
+3. Keep `expo-widgets` on 58.0.16. Versions 58.0.17 and 58.0.18 do not run on Android: their new custom notifications import `io.github.jakex7.peek`, but the published library is `io.github.expo.peek`, so the Kotlin build fails. With the imports fixed, the app stops at launch with `IllegalArgumentException: constructor cannot be null`, because the new `CustomNotification` class has no constructor. `package.json` pins the version and tells `expo install` to skip it:
+
+   ```json
+   "expo-widgets": "58.0.16",
+   ...
+   "expo": { "install": { "exclude": ["expo-widgets"] } }
+   ```
+
+   Remove both when a fixed version is published.
+
+4. Run the checks:
+
+   ```bash
+   bun run check
+   npx expo-doctor@latest
+   ```
+
+   If `expo-doctor` finds duplicate copies of a module at the same version, delete `node_modules` and run `bun install`. Its schema check reports that it "cannot access" `./assets/expo.icon`. That file is the template's Icon Composer bundle, a folder, and the app builds with it.
+
+5. Regenerate the native projects, then build:
+
+   ```bash
+   npx expo prebuild --clean
+   DEVELOPER_DIR=/Applications/Xcode-27.1.app/Contents/Developer bunx expo run:ios -d "iPhone Duo"
+   bun run android
+   ```
+
+6. Open the Duo tab at 0°, 90°, and 180° (`bun run duo fold`, `half`, `unfold`) and check that the angle and the split appear. If `bun run duo` reports an angle but the screen does not change, stop the old helper with `node node_modules/expo-device-hub/vendor/serve-sim/dist/serve-sim.js --kill` and run it again: a helper started before the simulator last booted no longer reaches it.
+
 ## Precompiled modules on iOS
 
 SDK 58 links Expo modules on iOS as precompiled XCFrameworks by default, and this app keeps that default for every module except two. `package.json` builds them from source:
@@ -235,6 +290,8 @@ SDK 58 links Expo modules on iOS as precompiled XCFrameworks by default, and thi
 }
 ```
 
-The iPhone Duo code in these two modules compiles only with the iOS 27.1 SDK (`#if canImport(UIKit, _version: 9127.0.85)` in `expo-hinge`, and `#if canImport(SwiftUICore, _version: 8.0.85)` around `ArrangementView` in `@expo/ui`). The precompiled frameworks of `@expo/ui` 58.0.16 and `expo-hinge` 58.0.1 leave it out: the Hinge tab shows the status, but no angle and no `ArrangementView` split. Built from source with Xcode 27.1, both work.
+The iPhone Duo code in these two modules compiles only with the iOS 27.1 SDK (`#if canImport(UIKit, _version: 9127.0.85)` in `expo-hinge`, and `#if canImport(SwiftUICore, _version: 8.0.85)` around `ArrangementView` in `@expo/ui`). The precompiled frameworks leave it out: the Hinge tab shows the status, but no angle and no `ArrangementView` split. Built from source with Xcode 27.1, both work.
+
+Checked on the iPhone Duo simulator with `@expo/ui` 58.0.16 (October 13) and again with `@expo/ui` 58.0.18 (October 15). The 58.0.18 framework contains the `ArrangementView` names, but on the Duo the angle panel and the split still do not appear. With both modules built from source, they do. `expo-hinge` is still 58.0.1.
 
 Before `expo-modules-core` 58.0.17, precompiled modules also stopped the app at launch with Xcode 27 (`Symbol not found: _swift_allocateMetadataPack`). `expo` 58.0.9 brings the fixed version.
