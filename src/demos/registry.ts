@@ -25,17 +25,18 @@ export type Status = 'Stable' | 'New' | 'Beta' | 'Alpha' | 'Experimental';
 
 export type ChangelogSection = { id: string; title: string };
 
-// the beta post until the final sdk 58 post is published. the section ids are its heading ids.
-const CHANGELOG_URL = 'https://expo.dev/changelog/sdk-58-beta';
+// the final sdk 58 post (published oct 15, 2026). the section ids are its heading ids.
+const CHANGELOG_URL = 'https://expo.dev/changelog/sdk-58';
 
 export const Changelog = {
   ios27: { id: 'sdk-58-is-built-for-ios-27', title: 'SDK 58 is built for iOS 27' },
+  iphoneDuo: { id: 'iphone-duo-support', title: 'iPhone Duo support' },
   appIntents: {
     id: 'app-intents-expose-your-app-to-siri-and-apple-intelligence',
     title: 'App Intents',
   },
   expoUi: {
-    id: 'expo-ui-native-navigation-on-ios-new-compose-components-and-more',
+    id: 'expo-ui-recycling-lists-native-navigation-on-ios-new-compose-components-and-more',
     title: 'Expo UI: native navigation on iOS',
   },
   modules2: { id: 'expo-modules-20-beta', title: 'Expo Modules 2.0 beta' },
@@ -116,7 +117,7 @@ export const DEMOS: Demo[] = [
     systemImage: 'rectangle.split.2x1',
     materialIcon: DevicesFoldIcon,
     status: 'New',
-    changelog: Changelog.ios27,
+    changelog: Changelog.iphoneDuo,
     href: '/duo',
   },
   {
